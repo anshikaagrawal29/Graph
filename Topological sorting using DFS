@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+
+//Can only be done for Directed Acyclic Graph
+public class Graph
+{
+	public int v;
+	public List<List<int>> adj;
+	
+	public Graph(int num)
+	{
+		v = num;
+		adj = new List<List<int>>();
+		
+		for(int i= 0; i< v; i++)
+		{
+			adj.Add(new List<int>());
+		}
+	}
+	
+	public void DFS(bool[] visited, int v, Stack<int> s)
+	{
+		visited[v] = true;
+		
+		foreach(int elem in adj[v])
+		{
+			if(!visited[elem])
+				DFS(visited,elem,s);
+		}
+		s.Push(v);
+			
+	}
+	public void topologicalSorting()
+	{
+		bool[] visited = new bool[v];
+		Stack<int> s = new Stack<int>();
+		
+		for(int i=0; i<v; i++)
+		{
+			if(!visited[i])
+				DFS(visited,i, s);
+		}
+		
+		while(s.Count > 0)
+			Console.Write(s.Pop() + " ");
+	}
+	
+	public static void Main()
+	{
+		Graph g = new Graph(6);
+		
+		g.adj[0].Add(2);
+		g.adj[0].Add(4);
+		g.adj[1].Add(2);
+		g.adj[1].Add(3);
+		g.adj[4].Add(5);
+		g.adj[3].Add(5);
+		
+		g.topologicalSorting();
+	}
+		
+}
