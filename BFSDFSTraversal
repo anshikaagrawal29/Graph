@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+
+// Create a Directed graph structure
+//BFS won't cover all if grpah is disconnected
+//DFS will cover all vertext because we are running a for loop
+public class Graph{
+
+		public int v;
+		public List<List<int>> adj;
+		
+		public Graph(int num)
+		{
+			v = num;
+			adj = new List<List<int>>();
+			for(int i = 0 ; i< v; i++)
+			{
+				adj.Add(new List<int>());
+			}
+		}
+	
+	public void BFSPrint(int s)
+	{
+		///Using BFS Traversal print it
+		Queue<int> q = new Queue<int>();
+		bool[] visited = new bool[v];
+		
+		q.Enqueue(s);
+		visited[s] = true;
+		int u =0;
+		while(q.Count > 0)
+		{
+			u = q.Dequeue();
+			Console.Write(u + " ");
+			foreach(int elem in adj[u])
+			{
+				if(!visited[elem])
+				{
+					q.Enqueue(elem);
+					visited[elem] = true;
+				}
+			}
+		}
+	}
+		
+	public void DFS(bool[] visited, int v)
+	{
+		visited[v] = true;
+		
+		foreach(int elem in adj[v])
+		{
+			if(!visited[elem])
+			{
+				Console.Write(elem + " ");
+				DFS(visited, elem);
+			}
+		}
+	}
+	
+	public void DFSPrint()
+	{
+		bool[] visited = new bool[v];
+		
+		for(int i = 0; i< v ; i++)
+		{
+			if(!visited[i])
+			{
+				Console.Write(i + " ");
+				DFS(visited, i);
+			}
+		}
+	}
+	public static void Main()
+	{
+		Graph g = new Graph(6);
+		g.adj[0].Add(1);
+		g.adj[0].Add(2);
+		g.adj[1].Add(3);
+		g.adj[1].Add(2);
+		g.adj[2].Add(2);
+		g.adj[2].Add(4);
+		g.adj[4].Add(3);
+		
+		g.BFSPrint(0);
+		Console.WriteLine();
+		g.DFSPrint();
+		
+	}
+}
