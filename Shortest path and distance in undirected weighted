@@ -1,0 +1,114 @@
+//Find shortest distance and path between any pair of vertices
+using System;
+using System.Collections.Generic;
+
+public class Graph
+{
+		public int v;
+		List<List<Tuple<int,int>>> adj;
+	
+		public Graph(int num)
+		{
+			v = num;
+			adj = new List<List<Tuple<int,int>>>();
+			for(int i= 0; i< v; i++)
+			{
+				adj.Add(new List<Tuple<int,int>>());
+			}
+		}
+	
+	public void ShortestDistance(int s)
+	{
+		int[] distance = new int[v];
+		int[] parent = new int[v];
+		bool[] visited = new bool[v];
+		
+		for(int i=0 ;i <v; i++)
+		{
+			parent[i] = -1;
+			distance[i] = int.MaxValue;
+			visited[i] = false;
+		}
+		
+		distance[s] = 0;
+		for(int i=0 ;i <v; i++)
+		{
+			int u = minDistance(visited, distance);
+			
+			visited[u] = true;
+			Tuple<int,int> data;
+			for(int j = 0; j < adj[u].Count; j++)
+			{
+				data = adj[u][j];
+				if(!visited[data.Item1] && distance[u] + data.Item2 < distance[data.Item1])
+				{
+					parent[data.Item1] = u;
+					distance[data.Item1] = distance[u] + data.Item2;
+				}
+			}
+			
+			//if(u == dest)
+			//	break;
+		}
+		
+		
+		//Printing shortest distance
+		//src = 0;
+		for(int m=0; m< v; m++)
+		{
+			Console.WriteLine("Shortest Distance from 0 to " + m + " is :" + distance[m]);
+		}
+		
+		
+		//Printing parent of all vertex;
+		for(int m=0; m< v; m++)
+		{
+			Console.Write("Parent of " + m + " is :" );
+			int num = m;
+			while(parent[num] != -1)
+			{
+				Console.Write("-" + parent[num]);
+				num = parent[num];
+			}
+			Console.WriteLine();
+		}
+		
+	}
+	
+	public int minDistance(bool[] visited, int[] distance)
+	{
+		int minIndex = -1;
+		int minValue = int.MaxValue;
+		for(int i =0; i< v; i++)
+		{
+			if(distance[i] < minValue && !visited[i])
+			{
+				minIndex = i;
+				minValue = distance[i];
+			}
+		}
+		
+		return minIndex;
+	}
+	public static void Main()
+	{
+		Graph g = new Graph(5);
+		//It is a weighted graph
+		g.adj[0].Add(new Tuple<int,int>(1,1));
+		g.adj[0].Add(new Tuple<int,int>(2,2));
+		g.adj[1].Add(new Tuple<int,int>(0,1));
+		g.adj[1].Add(new Tuple<int,int>(2,6));
+		g.adj[1].Add(new Tuple<int,int>(3,8));
+		g.adj[2].Add(new Tuple<int,int>(0,2));
+		g.adj[2].Add(new Tuple<int,int>(4,1));
+		g.adj[2].Add(new Tuple<int,int>(1,1));
+		g.adj[4].Add(new Tuple<int,int>(2,1));
+		g.adj[4].Add(new Tuple<int,int>(3,5));
+		g.adj[3].Add(new Tuple<int,int>(1,8));
+		g.adj[3].Add(new Tuple<int,int>(4,5));
+		
+		int src =0;
+		g.ShortestDistance(src);
+	}
+	
+}
