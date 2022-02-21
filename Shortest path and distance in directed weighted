@@ -1,0 +1,111 @@
+//Shortest path and distance in DAG
+using System;
+using System.Collections.Generic;
+
+public class Graph
+{
+	public int v;
+	public List<List<Tuple<int,int>>> adj;
+	
+	public Graph(int d)
+	{
+		v = d;
+		adj = new List<List<Tuple<int,int>>>();
+		for(int i = 0;i <v; i++)
+		{
+			adj.Add(new List<Tuple<int,int>>());
+		}
+	}
+	
+	public void printShortedPath(int src)
+	{
+		int[] dist = new int[v];
+		int[] parent = new int[v];
+		Stack<int> s = new Stack<int>();
+		
+		for(int i=0 ; i<v; i ++)
+		{
+			dist[i] = int.MaxValue;
+			parent[i] = -1;
+		}
+		
+		dist[src] = 0;
+		
+		findTopologicalSorting(s);
+		
+		while(s.Count > 0)
+		{
+			int u = s.Pop();
+			Tuple<int,int> data;
+			if(u != int.MaxValue)
+			{
+				for(int j=0; j< adj[u].Count; j++)
+				{
+					data = adj[u][j];
+					if(dist[u] + data.Item2 < dist[data.Item1])
+					{
+						parent[data.Item1] = u;
+					  dist[data.Item1] = dist[u] + data.Item2;
+					}
+				}
+			}
+		}
+		
+		//Printing path
+		for(int m = 0; m<v; m++)
+		{
+			Console.WriteLine("Shortest distance from 0 to " +m + " is " + dist[m]);
+		}
+		
+		for(int n1=0; n1 <v; n1++)
+		{
+			Console.Write("Parent of " + n1 + "-> ");
+			int temp =n1;
+			while(parent[temp] != -1)
+			{
+				Console.Write("- " + parent[temp]);
+				temp = parent[temp];
+			}
+			Console.WriteLine();
+		}
+	}
+	
+	public void findTopologicalSorting(Stack<int> st)
+	{
+		bool[] visited = new bool[v];
+		
+		
+		for(int i=0 ;i <v; i++)
+		{
+			if(!visited[i])
+				DFS(visited, i, st);
+		}
+	
+	}
+	
+	public void DFS(bool[] visited, int v, Stack<int> s)
+	{
+		visited[v] = true;
+		Tuple<int,int> data;
+		for(int i=0; i< adj[v].Count ; i++)
+		{	
+			data = adj[v][i];
+			if(!visited[data.Item1])
+				DFS(visited, data.Item1, s);
+		}
+		s.Push(v);
+	}
+	
+	public static void Main()
+	{
+		Graph g = new Graph(5);
+		g.adj[0].Add(new Tuple<int,int>(1,8));
+		g.adj[0].Add(new Tuple<int,int>(2,1));
+		g.adj[1].Add(new Tuple<int,int>(3,5));
+		g.adj[2].Add(new Tuple<int,int>(1,2));
+		g.adj[2].Add(new Tuple<int,int>(4,3));
+		g.adj[3].Add(new Tuple<int,int>(4,2));
+		
+		g.printShortedPath(0);
+	}
+}
