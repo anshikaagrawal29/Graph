@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+public class Graph
+{
+	public int v;
+	public List<List<int>> adj;
+	public Graph(int num)
+	{
+		v = num;
+		adj = new List<List<int>>();
+		for(int i=0 ;i<v ;i++)
+		{
+			adj.Add(new List<int>());
+		}
+	}
+	
+	public void TopologicalSorting()
+	{
+		int[] indegree = new int[v];
+		//Calculate and fill indegree
+		for(int i=0 ;i <v ; i++)
+		{
+			foreach(int elem in adj[i])
+				indegree[elem]++;
+		}
+		
+		Queue<int> q = new Queue<int>();
+		//Collect all elements whoes indegree is 0
+		for(int i=0 ;i <v; i++)
+		{
+			if(indegree[i] == 0)
+				q.Enqueue(i);
+		}
+		
+		while(q.Count > 0)
+		{
+			int u = q.Dequeue();
+			Console.Write(u + " ");
+			foreach(int elem in adj[u])
+			{
+				indegree[elem]--;
+				if(indegree[elem] == 0)
+					q.Enqueue(elem);
+			}
+		}
+	}
+	public static void Main()
+	{
+		Graph g = new Graph(6);
+		
+		g.adj[0].Add(4);
+		g.adj[0].Add(2);
+		g.adj[1].Add(2);
+		g.adj[1].Add(3);
+		g.adj[4].Add(5);
+		g.adj[3].Add(5);
+		
+		g.TopologicalSorting();
+	}
+}
