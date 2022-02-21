@@ -1,0 +1,78 @@
+//union find
+using System;
+
+public class Graph
+{
+	public int V;
+	public int E;
+	public Edge[] edge;
+	
+	public class Edge
+	{
+		public int src;
+		public int dest;
+	}
+	
+	public Graph(int d, int d1)
+	{
+		V= d;
+		E = d1;
+		edge = new Edge[E];
+		for(int i = 0; i< E; i++)
+		{
+			edge[i] = new Edge();
+		}
+		
+	}
+	
+	public int find(int[] parent, int i)
+	{
+		if(parent[i] == -1)
+			return i;
+		return find(parent, parent[i]);
+	 
+	}
+	
+	public void union(int x, int y, int[] parent)
+	{
+		parent[x] = y;
+	}
+		
+	public int isCycle()
+	{
+		int[] parent = new int[V];
+		for(int i=0; i< V;i++)
+			parent[i] = -1;
+		
+		for(int i=0 ; i < E; i++)
+		{
+			int x = find(parent, edge[i].src);
+			int y = find(parent, edge[i].dest);
+			
+			if(x == y)
+				return 1;
+			
+			union(x,y, parent);
+		}
+	
+	 return 0;
+	}
+	public static void Main()
+	{
+		Graph g = new Graph(3, 2);
+		g.edge[0].src = 0;
+		g.edge[0].dest = 1;
+		g.edge[1].src = 0;
+		g.edge[1].dest = 2;
+		//g.edge[2].src = 1;
+		//g.edge[2].dest = 2;
+		
+		if(g.isCycle() == 1)
+			Console.Write("Cycle Detected");
+		else
+			Console.Write("Cycle not Detected");
+		
+		
+			
+	}
+}
