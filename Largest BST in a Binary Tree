@@ -1,0 +1,93 @@
+using System;
+
+public class GFG 
+{
+	//Normal Node class with data and left and right
+	public class Node
+	{
+		public int data;
+		public Node left, right;
+
+			public Node(int d) 
+			{ 
+				data = d; 
+			}
+	}
+	
+	//Node info with size, max,min,isBst
+	public class nodeInfo 
+	{
+		public int size; // Size of subtree
+		public int max; // Min value in subtree
+		public int min; // Max value in subtree
+		public bool isBST; // If subtree is BST
+
+		public nodeInfo()
+		{
+		}
+
+		public nodeInfo(int size, int max, int min, bool isBST)
+		{
+			this.size = size;
+			this.max = max;
+			this.min = min;
+			this.isBST = isBST;
+		}
+	}
+	
+	public nodeInfo largestBST(Node root)
+	{
+		//This case will come when left or right is null
+		if (root == null) 
+		{
+			return new nodeInfo(0, int.MinValue, int.MaxValue, true);
+		}
+		
+		//This comes for leaf node
+		if (root.left == null && root.right == null) 
+		{
+			return new nodeInfo(1, root.data, root.data,true);
+		}
+
+		nodeInfo left = largestBST(root.left);
+		nodeInfo right = largestBST(root.right);
+		
+		nodeInfo returnInfo = new nodeInfo();
+
+		//if left BST and right BST and compare
+		if (left.isBST && right.isBST && left.max < root.data && right.min > root.data) 
+		{
+			//Size = left size + right size + 1
+			returnInfo.size = left.size + 1 + right.size;
+			returnInfo.isBST = true;
+			
+			//left minimum will be minimum
+			returnInfo.min = left.min;
+			returnInfo.max = right.max;
+
+			return returnInfo;
+		}
+
+		returnInfo.size = Math.Max(left.size, right.size);
+		returnInfo.isBST = false;
+		return returnInfo;
+	}
+	
+	public static void Main(String[] args)
+	{
+		GFG g = new GFG();
+		Node node1 = new Node(50);
+		node1.left = new Node(30);
+		node1.right = new Node(60);
+		node1.right.left = new Node(45);
+		node1.right.right = new Node(70);
+		node1.right.right.left = new Node(65);
+		node1.right.right.right = new Node(80);
+		
+		nodeInfo nodeFinal = g.largestBST(node1);
+		
+		Console.Write("Size of the largest BST is "
+					+ nodeFinal.size + "\n");
+	}
+}
+
